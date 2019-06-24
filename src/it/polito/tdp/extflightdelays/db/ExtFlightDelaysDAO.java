@@ -115,4 +115,30 @@ public class ExtFlightDelaysDAO {
 			throw new RuntimeException("Error Connection Database");
 		}
 	}
+	
+	public Double nVelivoliDistinti(String s1, String s2) {
+		String sql = "select count(distinct tail_number)as cnt " + 
+				"from flights f, airports a1, airports a2 " + 
+				"where a1.state = ? and a2.state = ? " + 
+				"and a1.id = f.ORIGIN_AIRPORT_ID and a2.id = f.DESTINATION_AIRPORT_ID ";
+		try {
+			Connection conn = ConnectDB.getConnection();
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setString(1, s1);
+			st.setString(2, s2);
+			ResultSet rs = st.executeQuery();
+			Double peso = 0.0;
+			if(rs.next()) {
+				peso = rs.getDouble("cnt");
+			}
+
+			conn.close();
+			return peso;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Errore connessione al database");
+			throw new RuntimeException("Error Connection Database");
+		}
+	}
 }

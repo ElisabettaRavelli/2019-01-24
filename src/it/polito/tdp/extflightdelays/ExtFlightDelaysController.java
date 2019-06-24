@@ -5,9 +5,11 @@
 package it.polito.tdp.extflightdelays;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.extflightdelays.model.Model;
+import it.polito.tdp.extflightdelays.model.Vicini;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -47,6 +49,23 @@ public class ExtFlightDelaysController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
+    	try {
+    		model.creaGrafo();
+    		txtResult.appendText("Grafo creato!\n");
+    		txtResult.appendText("Num vertici: "+model.nVertici()+" Num archi: "+model.nArchi()+"\n");
+    		
+    		cmbBoxStati.getItems().addAll(model.getStati());
+    		btnCreaGrafo.setDisable(true);
+    		btnVisualizzaVelivoli.setDisable(false);
+    		btnSimula.setDisable(true);
+            txtG.setDisable(true);
+            txtT.setDisable(true);
+    		
+    		
+    	} catch (Exception e) {
+    		txtResult.appendText("Si è verificato un errore nell'esecuzione\n");
+    		return;
+    	}
 
     }
 
@@ -57,7 +76,23 @@ public class ExtFlightDelaysController {
 
     @FXML
     void doVisualizzaVelivoli(ActionEvent event) {
-
+    	try {
+    	String stato = cmbBoxStati.getValue();
+    	List<Vicini> vicini = model.getVicini(stato);
+    	txtResult.appendText("Elenco degli stati collegati allo stato "+stato+"\n");
+    	for(Vicini v: vicini) {
+    		txtResult.appendText(v+ "\n");
+    		}
+    	btnCreaGrafo.setDisable(true);
+    	btnVisualizzaVelivoli.setDisable(true);
+    	btnSimula.setDisable(false);
+        txtG.setDisable(false);
+        txtT.setDisable(false);
+    
+    	}catch (Exception e) {
+    		txtResult.appendText("Si è verificato un errore nell'esecuzione\n");
+    		return;
+    	}
     }
     
     public void setModel(Model model) {
@@ -73,6 +108,11 @@ public class ExtFlightDelaysController {
         assert txtT != null : "fx:id=\"txtT\" was not injected: check your FXML file 'ExtFlightDelays.fxml'.";
         assert txtG != null : "fx:id=\"txtG\" was not injected: check your FXML file 'ExtFlightDelays.fxml'.";
         assert btnSimula != null : "fx:id=\"btnSimula\" was not injected: check your FXML file 'ExtFlightDelays.fxml'.";
-
+        
+        btnCreaGrafo.setDisable(false);
+        btnSimula.setDisable(true);
+        btnVisualizzaVelivoli.setDisable(true);
+        txtG.setDisable(true);
+        txtT.setDisable(true);
     }
 }
